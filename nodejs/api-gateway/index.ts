@@ -19,35 +19,34 @@ import { applyCSRF } from "./src/base/infrastructure/middleware/csrfHandling";
 const app: express.Application = express();
 const proxy = httpProxy.createProxyServer();
 
+// Middleware to convert all response keys to camelCase
 app.use(camelCaseResponseKeys);
 
 // Enable CORS for all origins (adjust for production)
 app.use(cors());
 
+// Apply CSRF protection middleware
 applyCSRF(app);
+
+// Register health check endpoint at /health
 healthCheckRoute.applyHealthCheckRoute(app);
 
-// function setCorsHeaders(req, res, next) {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, PUT, PATCH, DELETE"
-//   );
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// }
-
-// app.use(setCorsHeaders);
-
+// Main proxy routing logic for all defined services
 services.forEach((service) => {
+  // Handles all HTTP methods for the service path
   app.all(service.path, async (req: express.Request, res: express.Response) => {
+    // Remove the service path from the request URL before proxying
     req.url = req.url.replace(service.path, "");
+    // Encrypt and attach the API key to the request headers
     req.headers["api_key"] = Security.encrypt(service.apiKey);
     log(service.requireAuthentication);
+
+    // If the service requires authentication, validate the Bearer token
     if (service.requireAuthentication) {
-      //get bearer from header
+      // Get the Authorization header
       const auth = req.headers["authorization"];
 
+      // If no Authorization header, return error
       if (!auth) {
         return ResponseHandling(
           res,
@@ -56,6 +55,7 @@ services.forEach((service) => {
         );
       }
 
+      // If Authorization header is not Bearer, return error
       if (!auth.startsWith("Bearer")) {
         return ResponseHandling(
           res,
@@ -64,29 +64,38 @@ services.forEach((service) => {
         );
       }
 
+      // Call the external AUTH service to check authorization
       const r = await checkAuthorization(auth);
 
+      // If authorized, proxy the request to the backend service
       if (r.status) {
         proxy.web(req, res, { target: service.url });
       } else {
+        // If not authorized, return the error response
         return ResponseHandling(res, r.response, r.statusCode);
       }
-    } else proxy.web(req, res, { target: service.url });
+    } else {
+      // If authentication is not required, proxy the request directly
+      proxy.web(req, res, { target: service.url });
+    }
   });
 });
 
+// Handles errors from the proxy server
 proxy.on("error", (err: Error, req: express.Request, res: express.Response) => {
   let errorMessage: string;
   const requestedPath = req.path.toLowerCase();
 
+  // Custom error message for shop service
   if (requestedPath.indexOf("/shop/") > 0) {
     errorMessage = "Shop service is unavailable.";
-  }  else {
+  } else {
     errorMessage = "Service is unavailable."; // Default
   }
   return ResponseHandling(res, errorMessage, StatusCode.SERVICE_UNAVAILABLE);
 });
 
+// Start the Express server on the configured port
 const port: number = parseInt(process.env.PORT) || 4100;
 
 app.listen(port, () => {
