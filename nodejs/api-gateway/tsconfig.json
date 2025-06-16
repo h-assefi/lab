@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+      "outDir": "dist", // Output directory for compiled JS
+      "module": "CommonJS",
+      "rootDir": "."
+    },
+  }
