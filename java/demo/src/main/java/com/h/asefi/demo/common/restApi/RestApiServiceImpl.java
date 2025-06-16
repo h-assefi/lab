@@ -55,9 +55,9 @@ public class RestApiServiceImpl implements RestApiService, RestApiConverter {
     @Override
     public <T, Y> List<T> convertListValueFromInput(Y inputValue, Class<T> dtoClass) throws JsonProcessingException {
         List<T> bodyData;
-        if (inputValue instanceof ArrayList) {
-            bodyData = (List<T>) ((ArrayList) inputValue).stream()
-                    .map(map -> objectMapper.convertValue(map, dtoClass))
+        if (inputValue instanceof ArrayList<?> inputList) {
+            bodyData = inputList.stream()
+                    .map(element -> objectMapper.convertValue(element, dtoClass))
                     .collect(Collectors.toList());
         } else {
             JavaType type = objectMapper.getTypeFactory().constructCollectionType(List.class, dtoClass);
