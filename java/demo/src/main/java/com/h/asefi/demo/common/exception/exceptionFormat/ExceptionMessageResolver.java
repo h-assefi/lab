@@ -1,4 +1,4 @@
-package com.irisaco.common.exception.exceptionFormat;
+package com.h.asefi.demo.common.exception.exceptionFormat;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
