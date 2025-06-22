@@ -25,7 +25,18 @@ public class HttpClientApi implements RestApi {
         this.objectMapper = objectMapper;
     }
 
-    public ResponseEntity<?> get(String url, Map<String, String> headers) throws URISyntaxException, IOException, InterruptedException {
+    /**
+     * Sends an HTTP GET request to the specified URL with optional headers.
+     *
+     * @param url     The target URL for the GET request.
+     * @param headers Optional HTTP headers to include in the request.
+     * @return ResponseEntity containing the response body and status code.
+     * @throws URISyntaxException   If the URL is invalid.
+     * @throws IOException          If an I/O error occurs.
+     * @throws InterruptedException If the operation is interrupted.
+     */
+    public ResponseEntity<?> get(String url, Map<String, String> headers)
+            throws URISyntaxException, IOException, InterruptedException {
         HttpResponse<?> response;
         try (HttpClient client = newHttpClient()) {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -41,8 +52,21 @@ public class HttpClientApi implements RestApi {
         return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
     }
 
+    /**
+     * Sends an HTTP PUT request to the specified URL with optional headers and
+     * body.
+     *
+     * @param url     The target URL for the PUT request.
+     * @param headers Optional HTTP headers to include in the request.
+     * @param body    The request body to send (can be null).
+     * @return ResponseEntity containing the response body and status code.
+     * @throws URISyntaxException   If the URL is invalid.
+     * @throws IOException          If an I/O error occurs.
+     * @throws InterruptedException If the operation is interrupted.
+     */
     @Override
-    public ResponseEntity<?> put(String url, Map<String, String> headers, Object body) throws URISyntaxException, IOException, InterruptedException {
+    public ResponseEntity<?> put(String url, Map<String, String> headers, Object body)
+            throws URISyntaxException, IOException, InterruptedException {
         HttpResponse<?> response;
         try (HttpClient client = newHttpClient()) {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -62,8 +86,21 @@ public class HttpClientApi implements RestApi {
         return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
     }
 
+    /**
+     * Sends an HTTP POST request to the specified URL with optional headers and
+     * body.
+     *
+     * @param url     The target URL for the POST request.
+     * @param headers Optional HTTP headers to include in the request.
+     * @param body    The request body to send (can be null).
+     * @return ResponseEntity containing the response body and status code.
+     * @throws URISyntaxException   If the URL is invalid.
+     * @throws IOException          If an I/O error occurs.
+     * @throws InterruptedException If the operation is interrupted.
+     */
     @Override
-    public ResponseEntity<?> post(String url, Map<String, String> headers, Object body) throws URISyntaxException, IOException, InterruptedException {
+    public ResponseEntity<?> post(String url, Map<String, String> headers, Object body)
+            throws URISyntaxException, IOException, InterruptedException {
         HttpResponse<?> response;
         try (HttpClient client = newHttpClient()) {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
@@ -83,15 +120,29 @@ public class HttpClientApi implements RestApi {
         return new ResponseEntity<>(response.body(), HttpStatusCode.valueOf(response.statusCode()));
     }
 
+    /**
+     * Sends an HTTP DELETE request to the specified URL with optional headers and
+     * body.
+     *
+     * @param url     The target URL for the DELETE request.
+     * @param headers Optional HTTP headers to include in the request.
+     * @param body    The request body to send (can be null).
+     * @return ResponseEntity containing the response body and status code.
+     * @throws URISyntaxException   If the URL is invalid.
+     * @throws IOException          If an I/O error occurs.
+     * @throws InterruptedException If the operation is interrupted.
+     */
     @Override
-    public ResponseEntity<?> delete(String url, Map<String, String> headers, Object body) throws URISyntaxException, IOException, InterruptedException {
+    public ResponseEntity<?> delete(String url, Map<String, String> headers, Object body)
+            throws URISyntaxException, IOException, InterruptedException {
         HttpResponse<?> response;
         try (HttpClient client = newHttpClient()) {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(new URI(url));
 
             if (body != null)
-                requestBuilder.method("DELETE", HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)));
+                requestBuilder.method("DELETE",
+                        HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)));
             else
                 requestBuilder.DELETE();
 
