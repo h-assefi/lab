@@ -30,6 +30,14 @@ public class DemoApplication {
         this.databaseCreator = databaseCreator;
     }
 
+	/**
+	 * Configures and provides a DataSource bean for the application.
+	 * This method first ensures that the database and schema are initialized
+	 * using the DatabaseCreator before creating and returning a DataSource
+	 * based on the application properties.
+	 *
+	 * @return DataSource configured with application properties.
+	 */
 	@Bean
 	public DataSource dataSource() {
 		// Call the DatabaseCreator to initialize the DB first

@@ -35,12 +35,23 @@ public class DatabaseCreator {
     @Value("${spring.jpa.properties.hibernate.default_schema}")
     private String schemaName;
 
+    /**
+     * This method is invoked after the constructor and after dependency injection is completed to
+     * initialize the database requirements. It will create the database if it does not exist and
+     * create the schema if it does not exist.
+     */
     @PostConstruct
     public void initializeDatabaseRequirements() {
         createDatabaseIfNotExists();
         createSchemaIfNotExists();
     }
 
+
+    /**
+     * Checks if the target database exists and creates it if it doesn't. The target database is the
+     * database that is specified in the application configuration and is the database that the
+     * application will use to store its data.
+     */
     private void createDatabaseIfNotExists() {
         try (Connection connection = DriverManager.getConnection(bootstrapUrl, bootstrapUser, bootstrapPassword);
              Statement stmt = connection.createStatement()) {
@@ -58,6 +69,12 @@ public class DatabaseCreator {
         }
     }
 
+    /**
+     * Ensures that the target schema exists in the database. If the schema does not exist, it will be created.
+     * If the schema already exists, no action will be taken. The target schema is the schema that is
+     * specified in the application configuration and is the schema that the application will use to
+     * store its data.
+     */
     private void createSchemaIfNotExists() {
         try (Connection conn = DriverManager.getConnection(appJdbcUrl, appDbUser, appDbPassword);
              Statement stmt = conn.createStatement()) {
