@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: setting-table-create
+      author: co.asefi
+      changes:
+        - createTable:
+            tableName: setting
+            columns:
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: setting_pkey
+              - column:
+                  name: key
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: value
+                  type: Text
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: setting-default-dataSet-maintenance-key-value
+      author: co.asefi
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM setting  where "key" = 'MAINTENANCE_STATUS'
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: key
+                  value: MAINTENANCE_STATUS
+              - column:
+                  name: value
+                  value: 'false'
+            tableName: setting
