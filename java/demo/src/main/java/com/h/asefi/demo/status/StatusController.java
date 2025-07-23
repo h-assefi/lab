@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class StatusController extends BaseController {
-    public static final String GET_STATUS_URL = "/public/status";
+    public static final String GET_STATUS_URL = "/status";
     public static final String CHANGE_STATUS_URL = "/status/maintainable/{status}";
 
     private final StatusService statusService;

@@ -5,6 +5,8 @@ import com.h.asefi.demo.setting.SettingKey;
 import com.h.asefi.demo.setting.SettingService;
 import com.h.asefi.demo.status.dto.Status;
 import com.h.asefi.demo.status.dto.StatusResponseDTO;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,14 +31,14 @@ public class StatusServiceImpl implements StatusService {
     }
 
     @Override
-//    @Cacheable(value = "isMaintenanceCache", key = "'maintenanceStatus'")
+    @Cacheable(value = "isMaintenanceCache", key = "'maintenanceStatus'")
     public boolean isMaintenanceMode() {
         StatusResponseDTO status = getStatus();
         return status.status().equals(Status.MAINTENANCE);
     }
 
     @Override
-//    @CacheEvict(value = "isMaintenanceCache", key = "'maintenanceStatus'")
+    @CacheEvict(value = "isMaintenanceCache", key = "'maintenanceStatus'")
     public void setMaintenanceMode(boolean status) {
         settingService.addOrUpdate(SettingKey.MaintenanceStatus, String.valueOf(status));
     }
