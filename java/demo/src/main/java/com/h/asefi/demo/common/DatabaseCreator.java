@@ -50,16 +50,22 @@ public class DatabaseCreator {
 
     /**
      * Checks if the target database exists and creates it if it doesn't. The target
-     * database is the
-     * database that is specified in the application configuration and is the
-     * database that the
-     * application will use to store its data.
+     * database is the database that is specified in the application configuration
+     * and is the
+     * database that the application will use to store its data.
      *
      * Required PostgreSQL permissions:
      * - The user specified by 'app.bootstrap.user' must have the 'CREATEDB'
      * privilege
      * to be able to create new databases.
      * - The user must also have CONNECT privilege on the PostgreSQL server.
+     *
+     * Example PostgreSQL commands to grant these permissions:
+     * -- Grant CREATEDB privilege to the bootstrap user
+     * ALTER USER your_bootstrap_user CREATEDB;
+     * -- Grant CONNECT privilege on the server (usually granted by default)
+     * -- To explicitly grant on a specific database:
+     * GRANT CONNECT ON DATABASE postgres TO your_bootstrap_user;
      */
     private void createDatabaseIfNotExists() {
         try (Connection connection = DriverManager.getConnection(bootstrapUrl, bootstrapUser, bootstrapPassword);
@@ -82,16 +88,21 @@ public class DatabaseCreator {
      * Ensures that the target schema exists in the database. If the schema does not
      * exist, it will be created.
      * If the schema already exists, no action will be taken. The target schema is
-     * the schema that is
-     * specified in the application configuration and is the schema that the
-     * application will use to
-     * store its data.
+     * the schema that is specified in the application configuration and is the
+     * schema that the
+     * application will use to store its data.
      *
      * Required PostgreSQL permissions:
      * - The user specified by 'spring.datasource.username' must have the 'CREATE'
      * privilege
      * on the connected database to create new schemas.
      * - The user must also have CONNECT privilege on the database.
+     *
+     * Example PostgreSQL commands to grant these permissions:
+     * -- Grant CREATE privilege on the database to the application user
+     * GRANT CREATE ON DATABASE your_database TO your_app_user;
+     * -- Grant CONNECT privilege (usually granted by default)
+     * GRANT CONNECT ON DATABASE your_database TO your_app_user;
      */
     private void createSchemaIfNotExists() {
         try (Connection conn = DriverManager.getConnection(appJdbcUrl, appDbUser, appDbPassword);
