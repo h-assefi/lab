@@ -8,6 +8,20 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class ApiDeprecationInterceptor implements HandlerInterceptor {
+    /**
+     * Intercepts HTTP requests to check for the presence of the `ApiDeprecated`
+     * annotation
+     * on the handler method. If the annotation is present, adds headers to the
+     * response
+     * indicating that the API is deprecated. Optionally includes the "Since" and
+     * "Link"
+     * headers if specified in the annotation.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @param handler  the handler (or handler method) chosen to handle the request
+     * @return true to continue processing the request
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod method) {
