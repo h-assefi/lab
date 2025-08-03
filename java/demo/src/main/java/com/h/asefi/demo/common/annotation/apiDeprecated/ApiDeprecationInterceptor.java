@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@Component
 public class ApiDeprecationInterceptor implements HandlerInterceptor {
     /**
      * Intercepts HTTP requests to check for the presence of the `ApiDeprecated`
