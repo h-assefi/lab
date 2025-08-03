@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LoggingAspect {
-    private Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+    private final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Before("execution(* com.h.asefi.demo..*(..))")
     public void logBefore(JoinPoint joinPoint) {
