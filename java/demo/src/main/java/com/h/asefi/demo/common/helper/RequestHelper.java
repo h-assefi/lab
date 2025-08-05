@@ -5,6 +5,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 public class RequestHelper {
+    /**
+     * Gets the client IP address from the request, taking into account load
+     * balancers
+     * and proxies using the X-Forwarded-For header.
+     *
+     * @return The client IP address or "unknown" if the request is invalid.
+     */
     public static String getClientIp() {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
