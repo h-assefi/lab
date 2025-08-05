@@ -109,9 +109,12 @@ public class HttpClientApi implements RestApi {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(new URI(url));
 
-            if (body != null)
-                requestBuilder.POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)));
-            else
+            if (body != null) {
+                String bodyStr = (body instanceof String)
+                        ? (String) body // Use as-is (for form data)
+                        : objectMapper.writeValueAsString(body); // Serialize to JSON (for JSON requests)
+                requestBuilder.POST(HttpRequest.BodyPublishers.ofString(bodyStr));
+            } else
                 requestBuilder.POST(HttpRequest.BodyPublishers.noBody());
 
             if (headers != null)
