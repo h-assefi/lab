@@ -15,7 +15,9 @@ This project is a modular, production-ready Java application built with Spring B
 - **Health Check & Maintenance Mode**: Standardized endpoints for system status and maintenance toggling.
 - **Modular Design**: Separation of concerns via packages and interfaces.
 - **Unit Testing**: JUnit 5 for automated tests.
+- **Swagger/OpenAPI**: API documentation and interactive UI via springdoc-openapi.
 - **Configuration via Properties**: Externalized configuration for environment-specific settings.
+- **AOP Logging Support**: Easily add cross-cutting logging concerns using Spring AOP.
 
 ---
 
@@ -31,6 +33,7 @@ demo/
 │   │   │       │   ├── cache/
 │   │   │       │   ├── exception/
 │   │   │       │   ├── restApi/
+│   │   │       │   ├── logging/
 │   │   │       ├── setting/
 │   │   │       ├── status/
 │   │   ├── resources/
@@ -68,14 +71,25 @@ demo/
 - Converter for request/response serialization.
 - Service layer for easy API usage.
 
-### 2. Status Module ([status](src/main/java/com/h/asefi/demo/status/README.md))
+#### - **Logging Module** ([common/logging](src/main/java/com/h/asefi/demo/common/logging/))
+
+- Provides AOP-based logging using Spring's AspectJ support.
+- Allows logging of method entry, exit, and arguments for debugging and monitoring.
+
+### 2. Setting Module ([setting](src/main/java/com/h/asefi/demo/setting/README.md))
+
+- Stores and manages application settings as key-value pairs in the database.
+- Useful for configuration values, feature flags, and runtime-tunable settings.
+- Centralized access via `SettingService`.
+
+### 3. Status Module ([status](src/main/java/com/h/asefi/demo/status/README.md))
 
 - `/status` endpoint for health checks (used by load balancers/monitors).
 - `/status/maintainable/{status}` endpoint to toggle maintenance mode.
 - Caching for efficient status checks.
 - DTOs for structured status responses.
 
-### 3. Database Management
+### 4. Database Management
 
 #### - **Liquibase Changelog** ([db/changelog](src/main/resources/db/changelog/README.md))
 
@@ -120,6 +134,12 @@ demo/
 - **Database Storage**:  
   PostgreSQL stores all persistent data. The schema is managed and migrated using Liquibase.
 
+- **API Documentation**:  
+  Swagger UI is available at `/swagger-ui.html` for interactive API exploration and documentation.
+
+- **AOP Logging**:  
+  Cross-cutting logging concerns can be handled using the provided logging aspect.
+
 ---
 
 ## Usage
@@ -159,6 +179,10 @@ Use `CacheService` in your beans to manage cache entries.
 
 Liquibase changelogs are applied automatically. Add new changesets in `db/changelog/vX/`.
 
+### 7. API Documentation
+
+- Visit `http://localhost:8080/swagger-ui.html` to view and interact with the API documentation.
+
 ---
 
 ## Extending
@@ -168,6 +192,8 @@ Liquibase changelogs are applied automatically. Add new changesets in `db/change
 - **Add new exception type**: Extend `BaseException` and annotate with `@ResponseStatus`.
 - **Add new status**: Update `Status.java` enum and related DTOs.
 - **Add new database entities**: Create new JPA entities and update Liquibase changelogs.
+- **Add new application setting**: Use `SettingService` to manage new configuration keys.
+- **Add new logging aspect**: Implement additional aspects in the logging module for custom cross-cutting concerns.
 
 ---
 
@@ -183,4 +209,4 @@ mvn test
 
 ## Summary
 
-This project demonstrates a clean, modular approach to building enterprise Java applications with Spring Boot. It leverages modern tools and best practices for caching, exception handling, REST abstraction, health checks, PostgreSQL integration, and database migration, making it easy to extend and maintain complex applications.
+This project demonstrates a clean, modular approach to building enterprise Java applications with Spring Boot. It leverages modern tools and best practices for caching, exception handling, REST abstraction, health checks, PostgreSQL integration, database migration, API documentation, and AOP-based logging, making it easy to extend and maintain complex applications.
