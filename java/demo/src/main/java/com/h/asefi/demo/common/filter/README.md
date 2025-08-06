@@ -31,8 +31,38 @@ The `SecurityHeadersFilter` is a custom Spring Boot filter that adds important H
   - A strict policy may break functionality if not configured to match your resource usage.
   - For advanced use, consider specifying separate directives for scripts, styles, images, etc. (e.g., `script-src`, `style-src`).
 
+---
+
+# MaintenanceModeFilter
+
+The `MaintenanceModeFilter` is a custom Spring Boot filter that helps enforce application maintenance mode. When maintenance mode is enabled, most endpoints will return a `503 Service Unavailable` response, indicating that the service is temporarily unavailable due to maintenance.
+
+## How MaintenanceModeFilter Works
+
+- Checks the current maintenance mode status using the `StatusService`.
+- Allows requests to the `/status/maintainable` endpoint to always pass through (so maintenance mode can be toggled).
+- For all other endpoints, if maintenance mode is active:
+  - Responds with HTTP status `503 Service Unavailable`.
+  - Returns a JSON response with a status and message indicating the service is under maintenance.
+- If maintenance mode is not active, the request proceeds as normal.
+
+## Example JSON Response
+
+```json
+{
+  "status": "MAINTENANCE",
+  "message": "The service is currently under maintenance. Please try again later."
+}
+```
+
+## Considerations
+
+- Ensure that the `/status/maintainable` endpoint is secured or restricted to authorized users to prevent unauthorized toggling of maintenance mode.
+- Maintenance mode is useful for planned downtime, deployments, or critical updates.
+
+---
+
 ## Summary
 
-The `SecurityHeadersFilter` adds an extra layer of security to your Spring Boot application by setting HTTP headers that instruct browsers to enforce stricter security rules. While these headers are helpful, they should be used in combination with secure coding practices such as input validation, output escaping, and regular security reviews.
-
-\*\*Always test your application after enabling or modifying security headers to ensure that all functionality works as expected and that no legitimate
+The `SecurityHeadersFilter` and `MaintenanceModeFilter` add important layers of security and operational control to your Spring Boot application. Security headers help protect against common web vulnerabilities, while maintenance mode ensures users receive clear communication during planned outages.  
+**Always test your application after enabling or modifying these filters to ensure all functionality works as expected and that no legitimate requests are unintentionally blocked.**
