@@ -17,6 +17,23 @@ public class MaintenanceModeFilter implements Filter {
     @Autowired
     private StatusService statusService;
 
+    /**
+     * If the system is in maintenance mode, this filter will intercept all incoming
+     * requests and return a JSON response with a status of 503.
+     * If the system is not in maintenance mode, the filter will allow the request
+     * to proceed as normal.
+     * The only exception is for requests to the "/status/maintainable" endpoint,
+     * which are always allowed to proceed, even if the system is in maintenance
+     * mode.
+     * This allows the system to be set in and out of maintenance mode without
+     * blocking access to the maintenance endpoint.
+     * 
+     * @param request     the incoming request
+     * @param response    the outgoing response
+     * @param filterChain the filter chain to invoke the next filter in
+     * @throws IOException      if an input/output error occurs
+     * @throws ServletException if a servlet error occurs
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
