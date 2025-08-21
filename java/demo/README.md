@@ -1,6 +1,6 @@
 # Demo Java Project
 
-This project is a modular, production-ready Java application built with Spring Boot. It demonstrates best practices for building scalable, maintainable, and testable enterprise applications. The codebase is organized into several feature modules, each responsible for a specific concern such as REST API abstraction, caching, exception handling, status/health checks, and database management.
+This project is a modular, production-ready Java application built with Spring Boot. It demonstrates best practices for building scalable, maintainable, and testable enterprise applications. The codebase is organized into several feature modules, each responsible for a specific concern such as REST API abstraction, caching, exception handling, status/health checks, security headers, maintenance mode, and database management.
 
 ---
 
@@ -12,10 +12,13 @@ This project is a modular, production-ready Java application built with Spring B
 - **PostgreSQL**: Reliable, open-source relational database for persistent storage.
 - **Custom Exception Handling**: Structured error responses and custom exception types.
 - **REST API Abstraction**: Flexible HTTP client abstraction supporting multiple implementations.
-- **Health Check & Maintenance Mode**: Standardized endpoints for system status and maintenance toggling.
+- **Health Check & Maintenance Mode**: Standardized endpoints and filters for system status and maintenance toggling.
+- **Security Headers**: Custom filter to add important HTTP security headers to every response.
 - **Modular Design**: Separation of concerns via packages and interfaces.
 - **Unit Testing**: JUnit 5 for automated tests.
+- **Swagger/OpenAPI**: API documentation and interactive UI via springdoc-openapi.
 - **Configuration via Properties**: Externalized configuration for environment-specific settings.
+- **AOP Logging Support**: Easily add cross-cutting logging concerns using Spring AOP.
 
 ---
 
@@ -31,6 +34,8 @@ demo/
 │   │   │       │   ├── cache/
 │   │   │       │   ├── exception/
 │   │   │       │   ├── restApi/
+│   │   │       │   ├── logging/
+│   │   │       │   ├── filter/
 │   │   │       ├── setting/
 │   │   │       ├── status/
 │   │   ├── resources/
@@ -68,14 +73,30 @@ demo/
 - Converter for request/response serialization.
 - Service layer for easy API usage.
 
-### 2. Status Module ([status](src/main/java/com/h/asefi/demo/status/README.md))
+#### - **Logging Module** ([common/logging](src/main/java/com/h/asefi/demo/common/logging/))
+
+- Provides AOP-based logging using Spring's AspectJ support.
+- Allows logging of method entry, exit, and arguments for debugging and monitoring.
+
+#### - **Filter Module** ([common/filter](src/main/java/com/h/asefi/demo/common/filter/README.md))
+
+- **SecurityHeadersFilter**: Adds security headers (`X-XSS-Protection`, `X-Content-Type-Options`, `Content-Security-Policy`) to every response to protect against XSS, MIME type confusion, and content injection attacks.
+- **MaintenanceModeFilter**: Enforces maintenance mode by returning a `503 Service Unavailable` status and a JSON message when the application is in maintenance mode, except for the endpoint used to toggle maintenance.
+
+### 2. Setting Module ([setting](src/main/java/com/h/asefi/demo/setting/README.md))
+
+- Stores and manages application settings as key-value pairs in the database.
+- Useful for configuration values, feature flags, and runtime-tunable settings.
+- Centralized access via `SettingService`.
+
+### 3. Status Module ([status](src/main/java/com/h/asefi/demo/status/README.md))
 
 - `/status` endpoint for health checks (used by load balancers/monitors).
 - `/status/maintainable/{status}` endpoint to toggle maintenance mode.
 - Caching for efficient status checks.
 - DTOs for structured status responses.
 
-### 3. Database Management
+### 4. Database Management
 
 #### - **Liquibase Changelog** ([db/changelog](src/main/resources/db/changelog/README.md))
 
@@ -114,11 +135,23 @@ demo/
 - **Health Checks**:  
   `/status` endpoint provides system availability. Maintenance mode can be toggled for deployments.
 
+- **Maintenance Mode**:  
+  When enabled, most endpoints return a `503 Service Unavailable` status and a JSON message. The `/status/maintainable` endpoint remains accessible for toggling maintenance.
+
+- **Security Headers**:  
+  Every response includes security headers to help protect against XSS, MIME type confusion, and content injection attacks.
+
 - **Database Migration**:  
   Liquibase applies schema changes automatically at startup.
 
 - **Database Storage**:  
   PostgreSQL stores all persistent data. The schema is managed and migrated using Liquibase.
+
+- **API Documentation**:  
+  Swagger UI is available at `/swagger-ui.html` for interactive API exploration and documentation.
+
+- **AOP Logging**:  
+  Cross-cutting logging concerns can be handled using the provided logging aspect.
 
 ---
 
@@ -159,6 +192,10 @@ Use `CacheService` in your beans to manage cache entries.
 
 Liquibase changelogs are applied automatically. Add new changesets in `db/changelog/vX/`.
 
+### 7. API Documentation
+
+- Visit `http://localhost:8080/swagger-ui.html` to view and interact with the API documentation.
+
 ---
 
 ## Extending
@@ -168,6 +205,9 @@ Liquibase changelogs are applied automatically. Add new changesets in `db/change
 - **Add new exception type**: Extend `BaseException` and annotate with `@ResponseStatus`.
 - **Add new status**: Update `Status.java` enum and related DTOs.
 - **Add new database entities**: Create new JPA entities and update Liquibase changelogs.
+- **Add new application setting**: Use `SettingService` to manage new configuration keys.
+- **Add new logging aspect**: Implement additional aspects in the logging module for custom cross-cutting concerns.
+- **Customize security headers or maintenance filter**: Update the filter classes in `common/filter` as needed.
 
 ---
 
@@ -183,4 +223,4 @@ mvn test
 
 ## Summary
 
-This project demonstrates a clean, modular approach to building enterprise Java applications with Spring Boot. It leverages modern tools and best practices for caching, exception handling, REST abstraction, health checks, PostgreSQL integration, and database migration, making it easy to extend and maintain complex applications.
+This project demonstrates a clean, modular approach to building enterprise Java applications with Spring Boot. It leverages modern tools and best practices for caching, exception handling, REST abstraction, health checks, PostgreSQL integration, database migration, API documentation, security headers, maintenance mode, and AOP-based logging, making it easy to extend and maintain complex applications.

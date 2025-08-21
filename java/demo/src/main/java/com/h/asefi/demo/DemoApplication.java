@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import javax.sql.DataSource;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableCaching
+@EnableAspectJAutoProxy
 public class DemoApplication {
 
 	private final DatabaseCreator databaseCreator;
