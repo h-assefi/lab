@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -69,12 +70,16 @@ public class DatabaseCreator {
      */
     private void createDatabaseIfNotExists() {
         try (Connection connection = DriverManager.getConnection(bootstrapUrl, bootstrapUser, bootstrapPassword);
-                Statement stmt = connection.createStatement()) {
+                PreparedStatement stmt = connection.prepareStatement("SELECT 1 FROM pg_database WHERE datname = ?")) {
 
-            ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_database WHERE datname = '" + targetDatabase + "'");
+            stmt.setString(1, targetDatabase);
+            ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
-                stmt.execute("CREATE DATABASE " + targetDatabase);
-                System.out.println("✅ Database created: " + targetDatabase);
+                try (PreparedStatement createStmt = connection.prepareStatement("CREATE DATABASE ?")) {
+                    createStmt.setString(1, targetDatabase);
+                    createStmt.execute();
+                    System.out.println("✅ Database created: " + targetDatabase);
+                }
             } else {
                 System.out.println("✅ Database already exists: " + targetDatabase);
             }
