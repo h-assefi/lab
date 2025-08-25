@@ -33,9 +33,6 @@ public class DatabaseCreator {
     @Value("${spring.datasource.password}")
     private String appDbPassword;
 
-    @Value("${spring.jpa.properties.hibernate.default_schema}")
-    private String schemaName;
-
     /**
      * This method is invoked after the constructor and after dependency injection
      * is completed to
@@ -113,11 +110,11 @@ public class DatabaseCreator {
         try (Connection conn = DriverManager.getConnection(appJdbcUrl, appDbUser, appDbPassword);
                 Statement stmt = conn.createStatement()) {
 
-            stmt.execute("CREATE SCHEMA IF NOT EXISTS " + schemaName);
-            System.out.println("✅ Schema ensured: " + schemaName);
+            stmt.execute("CREATE SCHEMA IF NOT EXISTS public");
+            System.out.println("✅ Schema ensured: public");
 
         } catch (Exception e) {
-            throw new RuntimeException("❌ Failed to create schema: " + schemaName, e);
+            throw new RuntimeException("❌ Failed to create schema: public", e);
         }
     }
 }
