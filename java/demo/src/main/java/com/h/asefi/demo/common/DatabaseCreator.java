@@ -47,10 +47,8 @@ public class DatabaseCreator {
     }
 
     /**
-     * Checks if the target database exists and creates it if it doesn't. The target
-     * database is the database that is specified in the application configuration
-     * and is the
-     * database that the application will use to store its data.
+     * Ensures that the target database exists in the PostgreSQL server. If the
+     * target database does not exist, it will be created.
      *
      * Required PostgreSQL permissions:
      * - The user specified by 'app.bootstrap.user' must have the 'CREATEDB'
