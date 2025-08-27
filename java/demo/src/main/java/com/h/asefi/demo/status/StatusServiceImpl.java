@@ -21,7 +21,7 @@ public class StatusServiceImpl implements StatusService {
     @Override
     public StatusResponseDTO getStatus() {
 
-        Setting setting = settingService.getSettingByKey(SettingKey.MaintenanceStatus);
+        Setting setting = settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS);
         if (setting != null && setting.getValue() != null) {
             if (setting.getValue().equalsIgnoreCase("true")) {
                 return new StatusResponseDTO(Status.MAINTENANCE, "Service is in maintenance mode");
@@ -40,7 +40,7 @@ public class StatusServiceImpl implements StatusService {
     @Override
     @CacheEvict(value = "isMaintenanceCache", key = "'maintenanceStatus'")
     public void setMaintenanceMode(boolean status) {
-        settingService.addOrUpdate(SettingKey.MaintenanceStatus, String.valueOf(status));
+        settingService.addOrUpdate(SettingKey.MAINTENANCE_STATUS, String.valueOf(status));
     }
 
 }
