@@ -25,9 +25,9 @@ class StatusServiceImplTest {
     @Test
     void getStatus_shouldReturnMaintenance_whenSettingIsTrue() {
         Setting setting = new Setting();
-        setting.setKey(SettingKey.MaintenanceStatus);
+        setting.setKey(SettingKey.MAINTENANCE_STATUS);
         setting.setValue("true");
-        when(settingService.getSettingByKey(SettingKey.MaintenanceStatus)).thenReturn(setting);
+        when(settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS)).thenReturn(setting);
 
         StatusResponseDTO response = statusService.getStatus();
         assertEquals(Status.MAINTENANCE, response.status());
@@ -37,9 +37,9 @@ class StatusServiceImplTest {
     @Test
     void getStatus_shouldReturnOk_whenSettingIsFalse() {
         Setting setting = new Setting();
-        setting.setKey(SettingKey.MaintenanceStatus);
+        setting.setKey(SettingKey.MAINTENANCE_STATUS);
         setting.setValue("false");
-        when(settingService.getSettingByKey(SettingKey.MaintenanceStatus)).thenReturn(setting);
+        when(settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS)).thenReturn(setting);
 
         StatusResponseDTO response = statusService.getStatus();
         assertEquals(Status.OK, response.status());
@@ -48,7 +48,7 @@ class StatusServiceImplTest {
 
     @Test
     void getStatus_shouldReturnOk_whenSettingIsNull() {
-        when(settingService.getSettingByKey(SettingKey.MaintenanceStatus)).thenReturn(null);
+        when(settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS)).thenReturn(null);
 
         StatusResponseDTO response = statusService.getStatus();
         assertEquals(Status.OK, response.status());
@@ -58,9 +58,9 @@ class StatusServiceImplTest {
     @Test
     void getStatus_shouldReturnOk_whenSettingValueIsNull() {
         Setting setting = new Setting();
-        setting.setKey(SettingKey.MaintenanceStatus);
+        setting.setKey(SettingKey.MAINTENANCE_STATUS);
         setting.setValue(null);
-        when(settingService.getSettingByKey(SettingKey.MaintenanceStatus)).thenReturn(setting);
+        when(settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS)).thenReturn(setting);
 
         StatusResponseDTO response = statusService.getStatus();
         assertEquals(Status.OK, response.status());
@@ -70,9 +70,9 @@ class StatusServiceImplTest {
     @Test
     void isMaintenanceMode_shouldReturnTrue_whenStatusIsMaintenance() {
         Setting setting = new Setting();
-        setting.setKey(SettingKey.MaintenanceStatus);
+        setting.setKey(SettingKey.MAINTENANCE_STATUS);
         setting.setValue("true");
-        when(settingService.getSettingByKey(SettingKey.MaintenanceStatus)).thenReturn(setting);
+        when(settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS)).thenReturn(setting);
 
         assertTrue(statusService.isMaintenanceMode());
     }
@@ -80,9 +80,9 @@ class StatusServiceImplTest {
     @Test
     void isMaintenanceMode_shouldReturnFalse_whenStatusIsOk() {
         Setting setting = new Setting();
-        setting.setKey(SettingKey.MaintenanceStatus);
+        setting.setKey(SettingKey.MAINTENANCE_STATUS);
         setting.setValue("false");
-        when(settingService.getSettingByKey(SettingKey.MaintenanceStatus)).thenReturn(setting);
+        when(settingService.getSettingByKey(SettingKey.MAINTENANCE_STATUS)).thenReturn(setting);
 
         assertFalse(statusService.isMaintenanceMode());
     }
@@ -90,9 +90,9 @@ class StatusServiceImplTest {
     @Test
     void setMaintenanceMode_shouldUpdateSetting() {
         statusService.setMaintenanceMode(true);
-        verify(settingService).addOrUpdate(SettingKey.MaintenanceStatus, "true");
+        verify(settingService).addOrUpdate(SettingKey.MAINTENANCE_STATUS, "true");
 
         statusService.setMaintenanceMode(false);
-        verify(settingService).addOrUpdate(SettingKey.MaintenanceStatus, "false");
+        verify(settingService).addOrUpdate(SettingKey.MAINTENANCE_STATUS, "false");
     }
 }
