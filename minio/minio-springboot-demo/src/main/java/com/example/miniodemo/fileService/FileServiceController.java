@@ -1,8 +1,9 @@
-package com.example.miniodemo.controller;
+package com.example.miniodemo.fileService;
 
-import com.example.miniodemo.service.FileService;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,11 +11,11 @@ import java.io.InputStream;
 
 @RestController
 @RequestMapping("/files")
-public class FileController {
+public class FileServiceController {
 
     private final FileService fileService;
 
-    public FileController(FileService fileService) {
+    public FileServiceController(FileService fileService) {
         this.fileService = fileService;
     }
 
@@ -33,8 +34,8 @@ public class FileController {
         try {
             InputStream fileStream = fileService.getFile(filename);
             return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .body(new InputStreamResource(fileStream));
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                    .body(new InputStreamResource(fileStream));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
