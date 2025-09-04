@@ -13,16 +13,16 @@ import java.io.InputStream;
 @RequestMapping("/files")
 public class FileServiceController {
 
-    private final FileService fileService;
+    private final FileServiceImpl fileServiceImpl;
 
-    public FileServiceController(FileService fileService) {
-        this.fileService = fileService;
+    public FileServiceController(FileServiceImpl fileServiceImpl) {
+        this.fileServiceImpl = fileServiceImpl;
     }
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
         try {
-            fileService.uploadFile(file);
+            fileServiceImpl.uploadFile(file);
             return ResponseEntity.ok("File uploaded successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
@@ -32,7 +32,7 @@ public class FileServiceController {
     @GetMapping("/download/{filename}")
     public ResponseEntity<InputStreamResource> download(@PathVariable String filename) {
         try {
-            InputStream fileStream = fileService.getFile(filename);
+            InputStream fileStream = fileServiceImpl.getFile(filename);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                     .body(new InputStreamResource(fileStream));
@@ -44,7 +44,7 @@ public class FileServiceController {
     @GetMapping("/presigned/download/{filename}")
     public ResponseEntity<String> getDownloadUrl(@PathVariable String filename) {
         try {
-            String url = fileService.generateDownloadUrl(filename);
+            String url = fileServiceImpl.generateDownloadUrl(filename);
             return ResponseEntity.ok(url);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
@@ -54,7 +54,7 @@ public class FileServiceController {
     @GetMapping("/presigned/upload/{filename}")
     public ResponseEntity<String> getUploadUrl(@PathVariable String filename) {
         try {
-            String url = fileService.generateUploadUrl(filename);
+            String url = fileServiceImpl.generateUploadUrl(filename);
             return ResponseEntity.ok(url);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
