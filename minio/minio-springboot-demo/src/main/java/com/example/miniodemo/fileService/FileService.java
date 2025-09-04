@@ -24,11 +24,42 @@ import java.io.InputStream;
  * </ul>
  */
 public interface FileService {
+    /**
+     * Uploads a file to the configured MinIO bucket.
+     *
+     * @param file the file to upload (multipart form data)
+     * @throws Exception if the upload fails or MinIO is unreachable
+     */
     void uploadFile(MultipartFile file) throws Exception;
 
+    /**
+     * Retrieves a file from MinIO as an InputStream.
+     *
+     * @param filename the name of the file to retrieve
+     * @return InputStream of the file's contents
+     * @throws Exception if the file does not exist or retrieval fails
+     */
     InputStream getFile(String filename) throws Exception;
 
+    /**
+     * Generates a pre-signed URL for downloading a file from MinIO.
+     * The URL can be shared and used to download the file without direct
+     * authentication.
+     *
+     * @param filename the name of the file to generate the download URL for
+     * @return a pre-signed URL string for downloading the file
+     * @throws Exception if URL generation fails
+     */
     String generateDownloadUrl(String filename) throws Exception;
 
+    /**
+     * Generates a pre-signed URL for uploading a file to MinIO.
+     * The URL can be used to upload a file directly to MinIO without direct
+     * authentication.
+     *
+     * @param filename the name of the file to be uploaded
+     * @return a pre-signed URL string for uploading the file
+     * @throws Exception if URL generation fails
+     */
     String generateUploadUrl(String filename) throws Exception;
 }
