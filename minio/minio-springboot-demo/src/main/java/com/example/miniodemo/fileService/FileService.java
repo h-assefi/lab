@@ -1,97 +1,65 @@
 package com.example.miniodemo.fileService;
 
-import io.minio.*;
-import io.minio.http.Method;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 
-@Service
-public class FileService {
-
-    private final MinioClient minioClient;
-
-    @Value("${minio.bucket-name}")
-    private String bucketName;
-
-    public FileService(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
-
+/**
+ * Service interface for handling file operations with MinIO object storage.
+ * <p>
+ * Provides methods for uploading files, retrieving files as streams,
+ * and generating pre-signed URLs for secure upload and download operations.
+ * Implementations of this interface encapsulate the logic for interacting
+ * with the MinIO server using the MinIO Java SDK.
+ * </p>
+ *
+ * <ul>
+ * <li>{@link #uploadFile(MultipartFile)}: Uploads a file to the MinIO
+ * bucket.</li>
+ * <li>{@link #getFile(String)}: Retrieves a file as an InputStream from
+ * MinIO.</li>
+ * <li>{@link #generateDownloadUrl(String)}: Generates a pre-signed URL for
+ * downloading a file.</li>
+ * <li>{@link #generateUploadUrl(String)}: Generates a pre-signed URL for
+ * uploading a file.</li>
+ * </ul>
+ */
+public interface FileService {
     /**
-     * Uploads a file to the MinIO server.
+     * Uploads a file to the configured MinIO bucket.
      *
-     * First, this method checks if the specified bucket exists. If it doesn't, it
-     * creates it.
-     * Then, it uploads the file with the specified name to the bucket.
-     *
-     * @param file the file to upload
-     * @throws Exception if there is an exception when uploading the file
+     * @param file the file to upload (multipart form data)
+     * @throws Exception if the upload fails or MinIO is unreachable
      */
-    public void uploadFile(MultipartFile file) throws Exception {
-        boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
-        if (!found) {
-            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-        }
-
-        minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(file.getOriginalFilename())
-                        .stream(file.getInputStream(), file.getSize(), -1)
-                        .contentType(file.getContentType())
-                        .build());
-    }
+    void uploadFile(MultipartFile file) throws Exception;
 
     /**
-     * Retrieves a file from the MinIO server.
+     * Retrieves a file from MinIO as an InputStream.
      *
      * @param filename the name of the file to retrieve
-     * @return the contents of the file as an InputStream
-     * @throws Exception if there is an exception when retrieving the file
+     * @return InputStream of the file's contents
+     * @throws Exception if the file does not exist or retrieval fails
      */
-    public InputStream getFile(String filename) throws Exception {
-        return minioClient.getObject(
-                GetObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(filename)
-                        .build());
-    }
+    InputStream getFile(String filename) throws Exception;
 
     /**
-     * Generates a presigned URL for downloading a file from the MinIO server.
+     * Generates a pre-signed URL for downloading a file from MinIO.
+     * The URL can be shared and used to download the file without direct
+     * authentication.
      *
-     * @param filename the name of the file to generate a download URL for
-     * @return a presigned URL that can be used to download the file
-     * @throws Exception if there is an exception when generating the presigned URL
+     * @param filename the name of the file to generate the download URL for
+     * @return a pre-signed URL string for downloading the file
+     * @throws Exception if URL generation fails
      */
-    public String generateDownloadUrl(String filename) throws Exception {
-        return minioClient.getPresignedObjectUrl(
-                GetPresignedObjectUrlArgs.builder()
-                        .method(Method.GET)
-                        .bucket(bucketName)
-                        .object(filename)
-                        .expiry(600, TimeUnit.SECONDS)
-                        .build());
-    }
+    String generateDownloadUrl(String filename) throws Exception;
 
     /**
-     * Generates a presigned URL for uploading a file to the MinIO server.
+     * Generates a pre-signed URL for uploading a file to MinIO.
+     * The URL can be used to upload a file directly to MinIO without direct
+     * authentication.
      *
-     * @param filename the name of the file to generate an upload URL for
-     * @return a presigned URL that can be used to upload the file
-     * @throws Exception if there is an exception when generating the presigned URL
+     * @param filename the name of the file to be uploaded
+     * @return a pre-signed URL string for uploading the file
+     * @throws Exception if URL generation fails
      */
-    public String generateUploadUrl(String filename) throws Exception {
-        return minioClient.getPresignedObjectUrl(
-                GetPresignedObjectUrlArgs.builder()
-                        .method(Method.PUT)
-                        .bucket(bucketName)
-                        .object(filename)
-                        .expiry(600, TimeUnit.SECONDS)
-                        .build());
-    }
+    String generateUploadUrl(String filename) throws Exception;
 }
