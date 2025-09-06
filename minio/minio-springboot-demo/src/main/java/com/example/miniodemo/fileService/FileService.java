@@ -21,6 +21,16 @@ public class FileService {
         this.minioClient = minioClient;
     }
 
+    /**
+     * Uploads a file to the MinIO server.
+     *
+     * First, this method checks if the specified bucket exists. If it doesn't, it
+     * creates it.
+     * Then, it uploads the file with the specified name to the bucket.
+     *
+     * @param file the file to upload
+     * @throws Exception if there is an exception when uploading the file
+     */
     public void uploadFile(MultipartFile file) throws Exception {
         boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         if (!found) {
@@ -36,6 +46,13 @@ public class FileService {
                         .build());
     }
 
+    /**
+     * Retrieves a file from the MinIO server.
+     *
+     * @param filename the name of the file to retrieve
+     * @return the contents of the file as an InputStream
+     * @throws Exception if there is an exception when retrieving the file
+     */
     public InputStream getFile(String filename) throws Exception {
         return minioClient.getObject(
                 GetObjectArgs.builder()
@@ -44,6 +61,13 @@ public class FileService {
                         .build());
     }
 
+    /**
+     * Generates a presigned URL for downloading a file from the MinIO server.
+     *
+     * @param filename the name of the file to generate a download URL for
+     * @return a presigned URL that can be used to download the file
+     * @throws Exception if there is an exception when generating the presigned URL
+     */
     public String generateDownloadUrl(String filename) throws Exception {
         return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
@@ -54,6 +78,13 @@ public class FileService {
                         .build());
     }
 
+    /**
+     * Generates a presigned URL for uploading a file to the MinIO server.
+     *
+     * @param filename the name of the file to generate an upload URL for
+     * @return a presigned URL that can be used to upload the file
+     * @throws Exception if there is an exception when generating the presigned URL
+     */
     public String generateUploadUrl(String filename) throws Exception {
         return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
