@@ -1,5 +1,8 @@
 package com.h.asefi.demo.common.helper.base64Helper;
 
+import lombok.Getter;
+
+@Getter
 public enum MimeType {
     PNG("image/png"),
     JPEG("image/jpeg"),
@@ -30,7 +33,4 @@ public enum MimeType {
         return fromString(mimeType) != null;
     }
 
-    public String getType() {
-        return type;
-    }
 }
