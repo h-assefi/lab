@@ -1,5 +1,6 @@
 package com.example.miniodemo.fileService;
 
+import com.example.miniodemo.fileService.dto.UploadResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 
@@ -30,7 +31,7 @@ public interface FileService {
      * @param file the file to upload (multipart form data)
      * @throws Exception if the upload fails or MinIO is unreachable
      */
-    void uploadFile(MultipartFile file) throws Exception;
+    UploadResponseDTO uploadFile(MultipartFile file) throws Exception;
 
     /**
      * Retrieves a file from MinIO as an InputStream.

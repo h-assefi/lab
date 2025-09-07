@@ -1,5 +1,6 @@
 package com.example.miniodemo.fileService;
 
+import com.example.miniodemo.fileService.dto.UploadResponseDTO;
 import io.minio.*;
 import io.minio.http.Method;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ public class FileServiceImpl implements FileService {
         this.minioClient = minioClient;
     }
 
-    public void uploadFile(MultipartFile file) throws Exception {
+    public UploadResponseDTO uploadFile(MultipartFile file) throws Exception {
         boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         if (!found) {
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
@@ -34,11 +35,21 @@ public class FileServiceImpl implements FileService {
                         .stream(file.getInputStream(), file.getSize(), -1)
                         .contentType(file.getContentType())
                         .build());
+        return new UploadResponseDTO(generateLimitDownloadUrl(file.getOriginalFilename()));
     }
 
     public InputStream getFile(String filename) throws Exception {
         return minioClient.getObject(
                 GetObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(filename)
+                        .build());
+    }
+
+    public String generateLimitDownloadUrl(String filename) throws Exception {
+        return minioClient.getPresignedObjectUrl(
+                GetPresignedObjectUrlArgs.builder()
+                        .method(Method.GET)
                         .bucket(bucketName)
                         .object(filename)
                         .build());
