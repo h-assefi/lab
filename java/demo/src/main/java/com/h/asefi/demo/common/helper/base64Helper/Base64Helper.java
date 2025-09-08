@@ -4,6 +4,13 @@ import java.util.Base64;
 
 public class Base64Helper {
 
+    /**
+     * Checks if the provided string is a valid Base64 string.
+     * 
+     * @param input the string to validate
+     * @return {@code true} if the string is a valid Base64 string, {@code false}
+     *         otherwise
+     */
     public static boolean isBase64(String input) {
         if (input == null || input.isEmpty()) {
             return false;
