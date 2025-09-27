@@ -28,14 +28,16 @@ public class FileServiceImpl implements FileService {
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         }
 
+        String objectName = file.getOriginalFilename();
+
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(bucketName)
-                        .object(file.getOriginalFilename())
+                        .object(objectName)
                         .stream(file.getInputStream(), file.getSize(), -1)
                         .contentType(file.getContentType())
                         .build());
-        return new UploadResponseDTO(generateLimitDownloadUrl(file.getOriginalFilename()));
+        return new UploadResponseDTO(generateLimitDownloadUrl(objectName));
     }
 
     public InputStream getFile(String filename) throws Exception {
