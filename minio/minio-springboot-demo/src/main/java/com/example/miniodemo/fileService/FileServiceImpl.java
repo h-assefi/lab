@@ -34,7 +34,7 @@ public class FileServiceImpl implements FileService {
                 PutObjectArgs.builder()
                         .bucket(bucketName)
                         .object(objectName)
-                        .stream(file.getInputStream(), file.getSize(), -1)
+                        .stream(file.getInputStream(), -1, 10485760) // -1 = unknown size, 10MB = part size
                         .contentType(file.getContentType())
                         .build());
         return new UploadResponseDTO(generateLimitDownloadUrl(objectName));
