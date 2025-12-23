@@ -1,4 +1,4 @@
-import calculator_operator
+from calc_operator import calculator_operator
 
 def welcome_message():
     print('Welcome to SIMPLE CALC')
