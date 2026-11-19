@@ -19,7 +19,7 @@ This is where I try things out by building them: backend services, storage and m
 
 ### Event-Driven Order Processing Platform
 
-**Repository:** [production-order-service](https://github.com/h-assefi/production-order-service)
+**Repository:** [event-driven-order-platform](https://github.com/h-assefi/event-driven-order-platform)
 
 A Java 21 and Spring Boot microservices project demonstrating event-driven architecture using RabbitMQ.
 
